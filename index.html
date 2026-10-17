@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>나의 취향은 어떤 취향일까?</title>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff7f3;--card:#ffffff;--ink:#4a3b3b;--sub:#9a8683;--pink:#ff9eb5;--pink2:#ffe1e8;--line:#f1dfd9;--ok:#ff7a9a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241d1f;--card:#2f2629;--ink:#f6e9e6;--sub:#b9a29e;--pink:#e57f9b;--pink2:#4a3139;--line:#44363a;--ok:#ff8fae;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#241d1f;--card:#2f2629;--ink:#f6e9e6;--sub:#b9a29e;--pink:#e57f9b;--pink2:#4a3139;--line:#44363a;--ok:#ff8fae;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.6}
+.wrap{max-width:520px;margin:0 auto;padding:24px 18px 48px;min-height:100vh}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px 20px;box-shadow:0 6px 20px rgba(255,158,181,.12);margin-bottom:14px}
+h1{font-size:25px;margin:6px 0 10px;text-align:center}
+.emoji{font-size:44px;text-align:center}
+.sub{color:var(--sub);text-align:center;margin:0 0 20px;font-size:15px}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:15px;font:inherit;font-size:17px;cursor:pointer;background:var(--ok);color:#fff}
+.btn.ghost{background:transparent;color:var(--sub);border:1px solid var(--line)}
+.bar{height:8px;background:var(--pink2);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.bar i{display:block;height:100%;width:0;background:var(--pink);border-radius:99px;transition:width .3s}
+.cnt{font-size:13px;color:var(--sub);text-align:right;margin-bottom:12px}
+.tag{display:inline-block;background:var(--pink2);font-size:13px;padding:3px 10px;border-radius:99px;margin-bottom:10px}
+.q{font-size:19px;margin:0 0 16px;font-weight:bold}
+.opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:16px;padding:13px 14px;margin-bottom:10px;font:inherit;font-size:16px;cursor:pointer}
+.opt.on{border-color:var(--pink);background:var(--pink2)}
+.opt b{color:var(--ok);margin-right:6px}
+label{display:block;font-size:14px;color:var(--sub);margin:12px 0 4px}
+input,textarea{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font:inherit;font-size:16px;background:transparent;color:var(--ink)}
+textarea{border-style:dashed;resize:vertical;min-height:70px;font-size:15px;margin-top:4px}
+input:focus,textarea:focus{outline:none;border-color:var(--pink)}
+.nav{display:flex;gap:10px;margin-top:16px}
+.nav .btn{padding:13px}
+.hide{display:none}
+.res{white-space:pre-wrap;font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px;max-height:220px;overflow:auto;margin:12px 0}
+.toast{text-align:center;color:var(--ok);min-height:24px;margin-top:10px;font-size:15px}
+.type{font-size:23px;text-align:center;margin:4px 0 6px;font-weight:bold}
+.desc{text-align:center;margin:0 0 12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0 14px}
+.chips span{background:var(--pink2);border-radius:99px;padding:3px 10px;font-size:13px}
+.ans{font-size:14px;margin:8px 0 0}
+.ans small{color:var(--sub);display:block}
+.err{color:var(--ok);font-size:14px;margin:8px 0 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="start" class="card">
+  <div class="emoji">🍭</div>
+  <h1>나의 취향은 어떤 취향일까?</h1>
+  <p class="sub">정답 없는 가벼운 취향 테스트<br>끌리는 걸 고르고, 하고 싶은 말은 자유롭게 적어줘 ☺️<br>(1분이면 끝나!)</p>
+  <label for="nm">이름</label>
+  <input id="nm" maxlength="30" placeholder="이름을 알려줘" autocomplete="off">
+  <label for="bd">생일</label>
+  <input id="bd" type="date">
+  <div class="err" id="serr"></div>
+  <button class="btn" id="go" style="margin-top:18px">시작하기</button>
+  <button class="btn ghost hide" id="owner" style="margin-top:10px">👀 친구 결과 보기</button>
+</section>
+
+<section id="quiz" class="hide">
+  <div class="bar"><i id="fill"></i></div>
+  <div class="cnt" id="cnt"></div>
+  <div class="card">
+    <span class="tag" id="tag"></span>
+    <p class="q" id="q"></p>
+    <button class="opt" id="oa"></button>
+    <button class="opt" id="ob"></button>
+    <textarea id="free" placeholder="둘 다 아니거나 더 하고 싶은 말이 있다면 자유롭게 적어줘 (선택)"></textarea>
+    <div class="nav">
+      <button class="btn ghost" id="prev" style="width:35%">이전</button>
+      <button class="btn" id="next">다음</button>
+    </div>
+  </div>
+</section>
+
+<section id="end" class="card hide">
+  <div class="emoji" id="remoji"></div>
+  <p class="sub" id="rname" style="margin:0"></p>
+  <div class="type" id="rtype"></div>
+  <div class="chips" id="rchips"></div>
+  <p class="desc" id="rdesc"></p>
+  <p class="desc" id="rcheer" style="color:var(--ok)"></p>
+  <div class="toast" id="toast"></div>
+  <div id="fallback" class="hide">
+    <p class="sub" style="margin-bottom:0">마지막이야! 아래 버튼으로 복사해서 나한테 톡으로 보내줘 💌</p>
+    <div class="res" id="res"></div>
+    <button class="btn" id="copy">답변 복사하기</button>
+  </div>
+  <button class="btn ghost" id="redo" style="margin-top:10px">처음부터 다시 하기</button>
+</section>
+
+<section id="list" class="hide">
+  <div class="card">
+    <h1>👀 친구 결과</h1>
+    <p class="sub" id="lcnt"></p>
+    <button class="btn ghost" id="lback">돌아가기</button>
+  </div>
+  <div id="items"></div>
+</section>
+
+</div>
+<script>
+var Q=[
+["색상 & 디자인","너를 색깔로 표현한다면 어떤 톤에 가까워?","눈에 띄는 통통 튀는 비비드컬러","차분하고 포근한 파스텔/무채색톤"],
+["색상 & 디자인","평소에 더 끌리는 디자인 스타일은?","깔끔하고 심플한 미니멀 스타일","귀엽고 아기자기한 포인트가 들어간 스타일"],
+["색상 & 디자인","소지품을 살 때 가장 중요하게 보는 요소는?","매일 써도 질리지 않는 실용성","볼 때마다 기분 좋아지는 디자인/비주얼"],
+["선물","친구에게 선물을 받는다면 어떤 타입이 더 좋아?","두고두고 간직할 수 있는 정성 어린 기념품/굿즈","일상에서 매일 바로 쓸 수 있는 실용적인 데일리 아이템"],
+["선물","책상이나 방 한구석에 두고 싶은 오브제는?","귀여운 키링이나 캐릭터 피규어","텀블러, 스케줄러 같은 깔끔한 문구류"],
+["간식 & 음료","공부하거나 일할 때 당 떨어지면 먼저 손이 가는 것은?","당 충전 확실하게 되는 달콤한 초콜릿/마카롱","상큼하고 부담 없이 먹기 좋은 사탕/젤리"],
+["간식 & 음료","피곤할 때 에너지를 올리는 나만의 음료는?","정신이 번쩍 드는 시원한 커피/에너지드링크","속을 따뜻하게 데워주는 은은한 차(Tea)/음료"],
+["마음","힘든 순간 나에게 가장 필요한 한마디는?","“너는 무조건 잘할 거야!” 확신을 주는 자신감 충전형","“지금까지 너무 수고 많았어” 따뜻하게 토닥여주는 위로형"],
+["마음","나만의 스트레스 해소법은?","맛있는 거 먹고 좋아하는 영상 보며 휴식하기","일기 쓰거나 좋아하는 음악 들으며 생각 정돈하기"]
+];
+var TYPES={
+ EC:{e:"🌈",n:"통통 튀는 반짝 요정형",k:["#비비드","#귀염뽀짝","#에너자이저"],d:"어디서든 눈에 띄는 밝은 에너지의 소유자! 좋아하는 건 아낌없이 표현하고, 귀여운 것 하나에도 하루가 반짝여요.",c:"네가 웃으면 주변이 같이 환해져. 오늘도 그 반짝임 그대로 가자!"},
+ ES:{e:"✨",n:"당당한 센스 갓생러형",k:["#깔끔","#자신감","#실속파"],d:"군더더기 없이 센스 있게 해내는 타입! 스스로를 믿는 힘이 강하고, 오래 쓸 좋은 것을 알아보는 눈이 있어요.",c:"넌 이미 충분히 잘하고 있고, 앞으로는 더 잘할 거야. 무조건!"},
+ CC:{e:"🧸",n:"따뜻한 감성의 힐링러형",k:["#포근","#아기자기","#토닥토닥"],d:"작고 귀여운 것에서 위로를 찾는 마음 따뜻한 사람! 천천히, 나만의 속도로 일상을 보듬을 줄 알아요.",c:"지금까지 정말 수고 많았어. 오늘은 네 마음부터 먼저 토닥토닥 해줘."},
+ CS:{e:"🍵",n:"차분한 무드 정리러형",k:["#미니멀","#은은함","#생각정리"],d:"조용하지만 단단한 내면의 소유자! 깔끔한 공간과 따뜻한 차 한 잔으로 마음을 정돈하는 분위기 장인이에요.",c:"서두르지 않아도 괜찮아. 네 페이스대로 가는 게 제일 멋져."}
+};
+var ans,i=0,me={name:"",bd:""},db=null,user=null,uid=null;
+function $(id){return document.getElementById(id)}
+function reset(){ans=Q.map(function(){return {c:"",t:""}})}reset();
+function show(id){["start","quiz","end","list"].forEach(function(s){$(s).classList.toggle("hide",s!==id)});window.scrollTo(0,0)}
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function typeKey(){
+  var E=[0,5,6,7,8],C=[[1,"B"],[2,"B"],[3,"A"],[4,"A"]],ea=0,en=0,ca=0,cn=0;
+  E.forEach(function(k){if(ans[k].c){en++;if(ans[k].c==="A")ea++}});
+  C.forEach(function(p){if(ans[p[0]].c){cn++;if(ans[p[0]].c===p[1])ca++}});
+  var hiE=en?ea/en>=0.5:true,hiC=cn?ca/cn>=0.5:true;
+  return (hiE?"E":"C")+(hiC?"C":"S");
+}
+function build(){
+  var T=TYPES[typeKey()];
+  var out="[나의 취향은 어떤 취향일까?]\n이름: "+me.name+"\n생일: "+(me.bd||"-")+"\n유형: "+T.n+"\n\n";
+  Q.forEach(function(q,k){
+    var a=ans[k],p=a.c==="A"?"A. "+q[2]:a.c==="B"?"B. "+q[3]:"(선택 안 함)";
+    out+=(k+1)+". "+q[1]+"\n→ "+p+"\n";
+    if(a.t.trim())out+="✏️ "+a.t.trim()+"\n";
+    out+="\n";
+  });
+  return out.trim();
+}
+function render(){
+  var q=Q[i],a=ans[i];
+  $("tag").textContent=q[0];$("q").textContent=q[1];
+  $("oa").innerHTML="<b>A</b>"+q[2];$("ob").innerHTML="<b>B</b>"+q[3];
+  $("oa").className="opt"+(a.c==="A"?" on":"");$("ob").className="opt"+(a.c==="B"?" on":"");
+  $("free").value=a.t;
+  $("cnt").textContent=(i+1)+" / "+Q.length;
+  $("fill").style.width=((i+1)/Q.length*100)+"%";
+  $("prev").style.visibility=i===0?"hidden":"visible";
+  $("next").textContent=i===Q.length-1?"결과 보기":"다음";
+}
+function pick(c){ans[i].c=ans[i].c===c?"":c;render()}
+function save(){ans[i].t=$("free").value}
+$("go").onclick=function(){
+  var n=$("nm").value.trim();
+  if(!n){$("serr").textContent="이름을 적어줘 :)";return}
+  $("serr").textContent="";me.name=n;me.bd=$("bd").value;i=0;show("quiz");render();
+};
+$("oa").onclick=function(){pick("A")};
+$("ob").onclick=function(){pick("B")};
+$("prev").onclick=function(){save();if(i>0){i--;render()}};
+$("next").onclick=function(){save();if(i<Q.length-1){i++;render();window.scrollTo(0,0)}else{finish()}};
+async function finish(){
+  var k=typeKey(),T=TYPES[k];
+  $("remoji").textContent=T.e;
+  $("rname").textContent=me.name+"님의 취향 유형은…";
+  $("rtype").textContent=T.n;
+  $("rchips").innerHTML=T.k.map(function(x){return "<span>"+x+"</span>"}).join("");
+  $("rdesc").textContent=T.d;$("rcheer").textContent=T.c;
+  $("res").textContent=build();$("fallback").classList.add("hide");$("toast").textContent="";
+  show("end");
+  var ok=false;
+  try{
+    if(db&&uid){
+      await db.collection("responses").doc(uid).set({name:me.name,birthday:me.bd,type:T.n,answers:ans,text:build(),at:new Date().toISOString()});
+      ok=true;
+    }
+  }catch(e){ok=false}
+  if(ok)$("toast").textContent="결과가 저장됐어 💕";
+  else $("fallback").classList.remove("hide");
+}
+$("copy").onclick=function(){
+  var txt=build();
+  function done(){$("toast").textContent="복사됐어! 톡에 붙여넣기 해줘 💕"}
+  function fb(){
+    var r=document.createRange();r.selectNodeContents($("res"));
+    var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand("copy")?done():($("toast").textContent="위 내용을 꾹 눌러서 직접 복사해줘 🙏")}catch(e){$("toast").textContent="위 내용을 꾹 눌러서 직접 복사해줘 🙏"}
+  }
+  try{navigator.clipboard.writeText(txt).then(done,fb)}catch(e){fb()}
+};
+$("redo").onclick=function(){reset();i=0;$("nm").value="";$("bd").value="";show("start")};
+$("lback").onclick=function(){show("start")};
+$("owner").onclick=async function(){
+  show("list");$("lcnt").textContent="불러오는 중…";$("items").innerHTML="";
+  try{
+    var snap=await db.collection("responses").orderBy("at","desc").get();
+    $("lcnt").textContent=snap.empty?"아직 도착한 결과가 없어요":"총 "+snap.size+"명";
+    $("items").innerHTML=snap.docs.map(function(d){
+      var r=d.data(),h='<div class="card"><b>'+esc(r.name||"")+'</b> · '+esc(r.birthday||"생일 미입력")+'<div class="type" style="text-align:left;font-size:18px">'+esc(r.type||"")+'</div>';
+      (r.answers||[]).forEach(function(a,k){
+        var p=a.c==="A"?"A. "+Q[k][2]:a.c==="B"?"B. "+Q[k][3]:"(선택 안 함)";
+        h+='<div class="ans"><small>'+(k+1)+". "+esc(Q[k][1])+"</small>"+esc(p)+(a.t&&a.t.trim()?'<br>✏️ '+esc(a.t.trim()):"")+"</div>";
+      });
+      return h+"</div>";
+    }).join("");
+  }catch(e){$("lcnt").textContent="결과를 불러오지 못했어요. 다시 시도해 주세요."}
+};
+(async function(){
+  try{
+    if(window.claude&&claude.use){
+      user=await claude.use("user");db=await claude.use("db");
+      if(user){uid=await user.id();
+        if(db&&await user.isOwner())$("owner").classList.remove("hide");}
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
